@@ -10,6 +10,13 @@ router.get("/", (req, res, next) => {
   res.status(200).json(data);
 });
 
+router.post("/", (req, res, next) => {
+  const data = {
+    message: `Handling POST requests to /${endPointName} - ORDER WAS CREATED!`,
+  };
+  res.status(201).json(data);
+});
+
 router.get("/:id", (req, res, next) => {
   const id = req.params.id;
   if (id === "123") {
@@ -27,9 +34,20 @@ router.get("/:id", (req, res, next) => {
   }
 });
 
-router.post("/", (req, res, next) => {
+router.patch("/:id", (req, res, next) => {
+  const id = req.params.id;
   const data = {
-    message: `Handling POST requests to /${endPointName}`,
+    message: `Handling PATCH requests to /${endPointName}/{id} - ORDER WAS UPDATED!`,
+    id: id,
+  };
+  res.status(200).json(data);
+});
+
+router.delete("/:id", (req, res, next) => {
+  const id = req.params.id;
+  const data = {
+    message: `Handling DELETE requests to /${endPointName}/{id} - ORDER WAS DELETED!`,
+    id: id,
   };
   res.status(200).json(data);
 });
