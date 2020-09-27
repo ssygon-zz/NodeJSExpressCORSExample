@@ -1,7 +1,10 @@
 <template>
   <div class="hello">
     <p>Fetching content from express server...</p>
-    <strong>{{ msg }}</strong>
+    <h2>Products:</h2>
+    <strong>{{ productsMessage }}</strong>
+    <h2>Orders:</h2>
+    <strong>{{ ordersMessage }}</strong>
   </div>
 </template>
 
@@ -12,7 +15,8 @@ import axios from "axios";
 export default Vue.extend({
   data() {
     return {
-      msg: "Loading..."
+      productsMessage: "Loading...",
+      ordersMessage: "Loading..."
     };
   },
   mounted() {
@@ -28,13 +32,15 @@ export default Vue.extend({
       console.log("testing request message from express server");
 
       try {
-        const response = await axios.get(
-          `${this.getAPIEndPoint()}/products/123`
-        );
+        // Get products
+        let response = await axios.get(`${this.getAPIEndPoint()}/products/123`);
         console.log(response);
+        this.productsMessage = response.data.message;
 
-        // Update message variable
-        this.msg = response.data.msg;
+        // Get orders
+        response = await axios.get(`${this.getAPIEndPoint()}/orders/`);
+        console.log(response);
+        this.ordersMessage = response.data.message;
       } catch (error) {
         console.error(error);
       }
