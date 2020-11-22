@@ -1,48 +1,83 @@
 <template>
   <div class="hello">
-    <p>Fetching content from express server...</p>
-    <h2>Products:</h2>
-    <strong>{{ productsMessage }}</strong>
-    <h2>Orders:</h2>
-    <strong>{{ ordersMessage }}</strong>
+    <p>
+      Click the button to fetch content from the Express server<br />(or can use
+      a Headless CMS server like
+      <a href="https://strapi.io/" target="_blank">https://strapi.io/)</a>
+    </p>
+    <input
+      class="btn"
+      value="CLICK ME!"
+      type="button"
+      @click="testExpressServer()"
+    />
+
+    <div v-if="showFetchingContent">
+      <h1>Fetching!</h1>
+      <h2>Products:</h2>
+      <strong>{{ productsMessage }}</strong>
+      <h2>Orders:</h2>
+      <strong>{{ ordersMessage }}</strong>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
 import axios from "axios";
+import config from ".././appconfig";
 
 export default Vue.extend({
   data() {
     return {
-      productsMessage: "Loading...",
-      ordersMessage: "Loading..."
+      productsMessage: `Loading...`,
+      ordersMessage: `Loading...`,
+      showFetchingContent: false
     };
   },
   mounted() {
-    console.log("mounted");
-    this.testExpressServer();
+    console.log(`app is now mounted`);
   },
   methods: {
-    getAPIEndPoint() {
-      const endPointDomain = "http://localhost:4000";
-      return endPointDomain;
-    },
     async testExpressServer() {
-      console.log("testing request message from express server");
+      console.log(`testing request message from express server`);
 
+      // Error messages
+      const errorFetchingMessage = `Failed to fetch from express server! NOTE: Have you started the server?`;
+
+      // Show fetching content
+      this.showFetchingContent = true;
+
+      // Get products
       try {
-        // Get products
-        let response = await axios.get(`${this.getAPIEndPoint()}/products/123`);
+        const response = await axios.get(
+          `${config.getAPIEndpointFullPath()}/products/123`
+        );
         console.log(response);
-        this.productsMessage = response.data.message;
 
-        // Get orders
-        response = await axios.get(`${this.getAPIEndPoint()}/orders/`);
+        // Update message with data
+        this.productsMessage = response.data.message;
+      } catch (error) {
+        console.error(error);
+
+        // Update message with error
+        this.productsMessage = errorFetchingMessage;
+      }
+
+      // Get orders
+      try {
+        const response = await axios.get(
+          `${config.getAPIEndpointFullPath()}/orders/`
+        );
         console.log(response);
+
+        // Update message with data
         this.ordersMessage = response.data.message;
       } catch (error) {
         console.error(error);
+
+        // Update message with error
+        this.ordersMessage = errorFetchingMessage;
       }
     }
   }
@@ -64,5 +99,12 @@ li {
 }
 a {
   color: #42b983;
+}
+.btn {
+  border: transparent;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background: blue;
+  color: white;
 }
 </style>
