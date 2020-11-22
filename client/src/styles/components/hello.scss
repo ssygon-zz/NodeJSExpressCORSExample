@@ -1,0 +1,15 @@
+.hello {
+  margin: 5rem;
+  .btn {
+    outline: 0;
+    border: transparent;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: blue;
+    color: white;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

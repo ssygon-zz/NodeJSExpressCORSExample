@@ -1,9 +1,10 @@
 <template>
   <div class="hello">
     <p>
-      Click the button to fetch content from the Express server<br />(or can use
-      a Headless CMS server like
-      <a href="https://strapi.io/" target="_blank">https://strapi.io/)</a>
+      <strong>Click the button</strong> to fetch content from the Express
+      server<br />
+      (or from a Headless CMS server like
+      <a href="https://strapi.io/" target="_blank">https://strapi.io/</a>)
     </p>
     <input
       class="btn"
@@ -15,9 +16,9 @@
     <div v-if="showFetchingContent">
       <h1>Fetching!</h1>
       <h2>Products:</h2>
-      <strong>{{ productsMessage }}</strong>
+      <p>{{ productsMessage }}</p>
       <h2>Orders:</h2>
-      <strong>{{ ordersMessage }}</strong>
+      <p>{{ ordersMessage }}</p>
     </div>
   </div>
 </template>
@@ -30,8 +31,8 @@ import config from ".././appconfig";
 export default Vue.extend({
   data() {
     return {
-      productsMessage: `Loading...`,
-      ordersMessage: `Loading...`,
+      productsMessage: `Loading Products...`,
+      ordersMessage: `Loading Orders...`,
       showFetchingContent: false
     };
   },
@@ -39,17 +40,15 @@ export default Vue.extend({
     console.log(`app is now mounted`);
   },
   methods: {
-    async testExpressServer() {
-      console.log(`testing request message from express server`);
-
+    // Get Products
+    async getProducts() {
       // Error messages
-      const errorFetchingMessage = `Failed to fetch from express server! NOTE: Have you started the server?`;
+      const errorFetchingMessage = `Failed to fetch Products from the Express server! Have you started the server?`;
 
-      // Show fetching content
-      this.showFetchingContent = true;
-
-      // Get products
       try {
+        this.productsMessage = "Loading Products...";
+
+        // Get Product 123
         const response = await axios.get(
           `${config.getAPIEndpointFullPath()}/products/123`
         );
@@ -63,9 +62,16 @@ export default Vue.extend({
         // Update message with error
         this.productsMessage = errorFetchingMessage;
       }
+    },
+    // Get Orders
+    async getOrders() {
+      // Error messages
+      const errorFetchingMessage = `Failed to fetch Orders from the Express server! Have you started the server?`;
 
-      // Get orders
       try {
+        this.ordersMessage = "Loading Orders...";
+
+        // Get Orders
         const response = await axios.get(
           `${config.getAPIEndpointFullPath()}/orders/`
         );
@@ -79,32 +85,22 @@ export default Vue.extend({
         // Update message with error
         this.ordersMessage = errorFetchingMessage;
       }
+    },
+    testExpressServer() {
+      console.log(`testing request message from express server`);
+
+      // Show fetching content
+      this.showFetchingContent = true;
+
+      // Fetch data content
+      this.getProducts();
+      this.getOrders();
     }
   }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.btn {
-  border: transparent;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  background: blue;
-  color: white;
-}
+<style lang="scss">
+@import "../styles/components/hello.scss";
 </style>
